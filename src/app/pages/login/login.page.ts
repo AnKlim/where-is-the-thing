@@ -44,7 +44,7 @@ export class LoginPage implements OnInit, OnDestroy {
 
   private onIsLoggedIn(loginState: ILoginState) {
     if (loginState.isLoggedIn) {
-      this.router.navigate(['home']);
+      this.router.navigateByUrl('home');
     }
   }
 
@@ -53,6 +53,6 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
   navigateToRegister() {
-    this.router.navigate(['register']);
+    this.router.navigateByUrl('register');
   }
 }
