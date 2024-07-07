@@ -8,7 +8,6 @@ import * as LoadingActions from 'src/store/loading/loading.actions';
 import * as LoginActions from 'src/store/login/login.actions';
 import { Subscription } from 'rxjs';
 import { ILoginState } from 'src/store/login/ILoginState';
-import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -20,13 +19,12 @@ export class LoginPage implements OnInit, OnDestroy {
   form: FormGroup;
   loginStateSubscription: Subscription;
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private store: Store<IAppState>, private authService: AuthService) { }
+  constructor(private router: Router, private formBuilder: FormBuilder, private store: Store<IAppState>) { }
 
   ngOnInit() {
     this.form = new LoginPageForm(this.formBuilder).createForm();
 
     this.loginStateSubscription = this.store.select('login').subscribe(loginState => {
-      this.onIsLoggingIn(loginState);
       this.onIsLoggedIn(loginState);
 
 
@@ -44,21 +42,6 @@ export class LoginPage implements OnInit, OnDestroy {
     }
   }
 
-  private onIsLoggingIn(loginState: ILoginState) {
-    if (loginState.isLoggingIn) {
-      const email = this.form.get('email').value;
-      const password = this.form.get('password').value;
-      this.authService.login(email, password).subscribe({
-        next: user => {
-          this.store.dispatch(LoginActions.loginSuccess({user}))
-        }, 
-        error: error => {
-          this.store.dispatch(LoginActions.loginFail({error}));
-        }
-      });
-    }
-  }
-
   private onIsLoggedIn(loginState: ILoginState) {
     if (loginState.isLoggedIn) {
       this.router.navigate(['home']);
@@ -66,7 +49,7 @@ export class LoginPage implements OnInit, OnDestroy {
   }
 
   login() {
-    this.store.dispatch(LoginActions.login());
+    this.store.dispatch(LoginActions.login({ email: this.form.get('email').value, password: this.form.get('password').value}));
   }
 
   navigateToRegister() {
