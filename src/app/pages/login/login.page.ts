@@ -8,6 +8,7 @@ import * as LoadingActions from 'src/store/loading/loading.actions';
 import * as LoginActions from 'src/store/login/login.actions';
 import { Subscription } from 'rxjs';
 import { ILoginState } from 'src/store/login/ILoginState';
+import { NavController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ export class LoginPage implements OnInit, OnDestroy {
   form: FormGroup;
   loginStateSubscription: Subscription;
 
-  constructor(private router: Router, private formBuilder: FormBuilder, private store: Store<IAppState>) { }
+  constructor(private router: Router, private formBuilder: FormBuilder,
+    private store: Store<IAppState>, private navController: NavController) { }
 
   ngOnInit() {
     this.form = new LoginPageForm(this.formBuilder).createForm();
@@ -44,7 +46,7 @@ export class LoginPage implements OnInit, OnDestroy {
 
   private onIsLoggedIn(loginState: ILoginState) {
     if (loginState.isLoggedIn) {
-      this.router.navigateByUrl('home');
+      this.navController.navigateRoot('home');
     }
   }
 
